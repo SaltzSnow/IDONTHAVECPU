@@ -1,4 +1,4 @@
-# I DON'T HAVE CPU (ชื่อโปรเจกต์ของคุณ)
+# I DON'T HAVE CPU 
 
 โปรเจกต์สำหรับแนะนำสเปคคอมพิวเตอร์โดยใช้ Gemini API สำหรับ Backend (Django) และ Next.js สำหรับ Frontend พร้อมการจัดการด้วย Docker
 
@@ -18,12 +18,11 @@
 
 2.  **Clone Repository (ถ้ายังไม่ได้ทำ):**
     ```bash
-    git clone [https://github.com/yourusername/your-repository-name.git](https://github.com/yourusername/your-repository-name.git)
-    cd your-repository-name
+    git clone https://github.com/SaltzSnow/IDONTHAVECPU/
+    cd IDONTHAVECPU
     ```
 
 3.  **สร้างไฟล์ `.env` ที่ Root:**
-    คัดลอกเนื้อหาจาก `.env.example` (ถ้าคุณสร้างไว้) หรือสร้างใหม่แล้วใส่:
     ```env
     GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
     ```
@@ -44,9 +43,3 @@
 * `docker-compose.yml`: Configuration for Docker services.
 * `Dockerfile`: (อยู่ในแต่ละ sub-project) สำหรับ build Docker images.
 
-## การ Push Images ไปยัง Docker Hub (Optional)
-ดูคำแนะนำในเอกสารหรือ commit history
-
----
-
-*(เพิ่มรายละเอียดอื่นๆ ตามความเหมาะสม)*
