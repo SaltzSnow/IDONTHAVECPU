@@ -31,10 +31,10 @@ EXPOSE 8000
 
 # สำหรับ Production: ควรใช้ Gunicorn (สำหรับ WSGI) หรือ Daphne (สำหรับ ASGI ถ้าใช้ Channels)
 # ตัวอย่าง Gunicorn (ตรวจสอบให้แน่ใจว่าคุณมี gunicorn ใน requirements.txt)
-# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "pcrecommender.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "pcrecommender.wsgi:application"]
 # หรือถ้าใช้ ASGI (เช่นกับ Django Channels หรือ FastAPI ภายใน Django):
 # CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "pcrecommender.asgi:application"]
 
 # **สำหรับตอนนี้ เราจะใช้ dev server ก่อนเพื่อให้ง่ายต่อการทดสอบ**
 # **แต่สำหรับ Production จริงๆ ให้เปลี่ยนไปใช้ Gunicorn หรือ Daphne นะครับ**
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]s
