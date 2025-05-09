@@ -1,4 +1,4 @@
-# I DON'T HAVE CPU (ชื่อโปรเจกต์ของคุณ)
+# I DON'T HAVE CPU 
 
 โปรเจกต์สำหรับแนะนำสเปคคอมพิวเตอร์โดยใช้ Gemini API สำหรับ Backend (Django) และ Next.js สำหรับ Frontend พร้อมการจัดการด้วย Docker
 
