@@ -37,4 +37,4 @@ CMD ["gunicorn", "--bind", "0.0.0.0:8000", "pcrecommender.wsgi:application"]
 
 # **สำหรับตอนนี้ เราจะใช้ dev server ก่อนเพื่อให้ง่ายต่อการทดสอบ**
 # **แต่สำหรับ Production จริงๆ ให้เปลี่ยนไปใช้ Gunicorn หรือ Daphne นะครับ**
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]s
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
