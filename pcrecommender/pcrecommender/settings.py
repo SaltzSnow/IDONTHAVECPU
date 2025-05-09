@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 import dj_database_url
 
 
@@ -89,7 +90,7 @@ WSGI_APPLICATION = 'pcrecommender.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://postgres:postgres@localhost:5432/pcfavorites_db',  # fallback สำหรับ local dev
+        default= os.getenv('DATABASE_URL'),  # fallback สำหรับ local dev
         conn_max_age=600,  # ปรับตามความเหมาะสม
     )
 }
