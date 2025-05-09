@@ -3,6 +3,7 @@ asgiref==3.8.1
 cachetools==5.5.2
 certifi==2025.4.26
 charset-normalizer==3.4.2
+dj-database-url==2.3.0
 dj-rest-auth==7.0.1
 Django==4.2.21
 django-allauth==65.7.0
@@ -42,4 +43,3 @@ typing_extensions==4.13.2
 uritemplate==4.1.1
 urllib3==2.4.0
 zipp==3.21.0
-gunicorn==22.0.0

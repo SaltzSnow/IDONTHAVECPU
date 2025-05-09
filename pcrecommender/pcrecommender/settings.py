@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,14 +88,10 @@ WSGI_APPLICATION = 'pcrecommender.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_NAME', 'pcfavorites_db'),      # ใช้ env var ถ้ามี
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),       # ใช้ env var ถ้ามี
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'), # ใช้ env var ถ้ามี
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),        # Default เป็น localhost, Docker Compose จะ override เป็น 'db'
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),                 # ใช้ env var ถ้ามี
-    }
+    'default': dj_database_url.config(
+        default='postgres://postgres:postgres@localhost:5432/pcfavorites_db',  # fallback สำหรับ local dev
+        conn_max_age=600,  # ปรับตามความเหมาะสม
+    )
 }
 
 
