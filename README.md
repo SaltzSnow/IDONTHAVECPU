@@ -18,7 +18,7 @@
 
 2.  **Clone Repository (ถ้ายังไม่ได้ทำ):**
     ```bash
-    git clone [https://github.com/yourusername/your-repository-name.git](https://github.com/yourusername/your-repository-name.git)
+    git clone https://github.com/SaltzSnow/IDONTHAVECPU/
     cd your-repository-name
     ```
 
@@ -44,9 +44,3 @@
 * `docker-compose.yml`: Configuration for Docker services.
 * `Dockerfile`: (อยู่ในแต่ละ sub-project) สำหรับ build Docker images.
 
-## การ Push Images ไปยัง Docker Hub (Optional)
-ดูคำแนะนำในเอกสารหรือ commit history
-
----
-
-*(เพิ่มรายละเอียดอื่นๆ ตามความเหมาะสม)*
