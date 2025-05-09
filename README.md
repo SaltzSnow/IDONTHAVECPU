@@ -19,7 +19,7 @@
 2.  **Clone Repository (ถ้ายังไม่ได้ทำ):**
     ```bash
     git clone https://github.com/SaltzSnow/IDONTHAVECPU/
-    cd your-repository-name
+    cd IDONTHAVECPU
     ```
 
 3.  **สร้างไฟล์ `.env` ที่ Root:**
