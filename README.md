@@ -23,7 +23,6 @@
     ```
 
 3.  **สร้างไฟล์ `.env` ที่ Root:**
-    คัดลอกเนื้อหาจาก `.env.example` (ถ้าคุณสร้างไว้) หรือสร้างใหม่แล้วใส่:
     ```env
     GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
     ```
