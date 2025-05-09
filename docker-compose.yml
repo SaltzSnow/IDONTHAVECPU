@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:15-alpine # หรือ postgres:16-alpine
+    container_name: pcfav_postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Persist data
+    environment:
+      - POSTGRES_USER=postgres        # ต้องตรงกับใน Django settings.py
+      - POSTGRES_PASSWORD=postgres # ต้องตรงกับใน Django settings.py
+      - POSTGRES_DB=pcfavorites_db        # ต้องตรงกับใน Django settings.py
+    ports:
+      - "5432:5432" # Map port ของ host ไปยัง container (สำหรับ DBeaver หรือ pgAdmin)
+    healthcheck: # (Optional) ตรวจสอบว่า DB พร้อมใช้งานหรือยัง
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pcfavorites_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./pcrecommender # Path ไปยังโฟลเดอร์ Django
+      dockerfile: Dockerfile
+    container_name: pcfav_django_backend
+    command: >
+      sh -c "python manage.py makemigrations recommender_api &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./pcrecommender:/app # Mount โค้ด Django เข้าไปใน container (ดีสำหรับ development)
+    ports:
+      - "8000:8000" # Map port ของ host ไปยัง container
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=pcrecommender.settings
+      # --- Database connection details (ควรตรงกับ Django settings.py แต่จะถูก override ด้วย Docker network) ---
+      - POSTGRES_NAME=pcfavorites_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db       # <--- ใช้ชื่อ service 'db' ของ PostgreSQL
+      - POSTGRES_PORT=5432
+      # --- Gemini API Key ---
+      - GEMINI_API_KEY=${GEMINI_API_KEY} # จะดึงมาจาก .env ไฟล์ที่ root ของ project_root
+    depends_on:
+      db: # รอให้ db service เริ่มทำงานก่อน (healthcheck จะช่วยให้รอจนพร้อม)
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./pcrecommender-frontend # Path ไปยังโฟลเดอร์ Next.js
+      dockerfile: Dockerfile
+    container_name: pcfav_nextjs_frontend
+    ports:
+      - "3000:3000" # Map port ของ host ไปยัง container
+    environment:
+      - NODE_ENV=development # หรือ production ถ้าต้องการ build สำหรับ production
+      - NEXT_PUBLIC_API_BASE_URL=http://backend:8000/api # <--- ใช้ชื่อ service 'backend'
+                                                        # Next.js ที่รันใน container จะเรียก Django ผ่านชื่อ service นี้
+    depends_on:
+      - backend # รอให้ backend service เริ่มทำงานก่อน (แต่ไม่ได้หมายความว่า Django app พร้อมใช้งาน)
+    volumes:
+      - ./pcrecommender-frontend:/app # Mount โค้ด Next.js (ดีสำหรับ development)
+      - /app/node_modules # ป้องกันไม่ให้ node_modules ของ host ไปทับใน container
+      - /app/.next        # ป้องกันไม่ให้ .next ของ host ไปทับใน container
+    restart: unless-stopped
+
+volumes:
+  postgres_data: # Named volume สำหรับเก็บข้อมูล PostgreSQL

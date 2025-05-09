@@ -1,0 +1,57 @@
+# General
+.DS_Store
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+static_collected/ # ถ้าคุณใช้ collectstatic ของ Django และไม่ต้องการเก็บใน repo
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Sensitive Files
+.env 
+pcrecommender/.env  # ไฟล์ .env ของ Django (ถ้ามี)
+pcrecommender-frontend/.env.local # ไฟล์ .env.local ของ Next.js
+pcrecommender-frontend/.env # ไฟล์ .env อื่นๆ ของ Next.js
+*.pem
+*.key
+
+# IDE / Editor specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node.js / Next.js
+pcrecommender-frontend/node_modules/
+pcrecommender-frontend/.next/
+pcrecommender-frontend/out/ # ถ้ามีการ export static site
+pcrecommender-frontend/build/ # ถ้ามี build output อื่นๆ
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Docker
+docker-compose.override.yml # ถ้ามีไฟล์ override ที่ไม่ต้องการแชร์
+# อาจจะไม่ ignore Dockerfile หรือ docker-compose.yml เพราะเป็นส่วนหนึ่งของโปรเจกต์
+
+# Python specific build artifacts
+*.egg-info/
+dist/
+build/
+*.tar.gz
+*.whl
+
+# PostgreSQL data (ถ้าเผลอสร้าง volume path ผิดที่)
+# postgres_data/ # โดยปกติ volume จะถูกจัดการโดย Docker และไม่ควรอยู่ใน project dir
