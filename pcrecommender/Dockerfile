@@ -28,6 +28,7 @@ EXPOSE 8000
 # คำสั่งที่จะรันเมื่อ container เริ่มทำงาน
 # สำหรับ Development: ใช้ Django development server
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN ["python", "manage.py", "migrate"]
 
 # สำหรับ Production: ควรใช้ Gunicorn (สำหรับ WSGI) หรือ Daphne (สำหรับ ASGI ถ้าใช้ Channels)
 # ตัวอย่าง Gunicorn (ตรวจสอบให้แน่ใจว่าคุณมี gunicorn ใน requirements.txt)
