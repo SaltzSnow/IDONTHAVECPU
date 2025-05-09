@@ -100,9 +100,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data } = await apiClient.post<AuthTokens>('/auth/registration/', userData);
       if (data.access && data.refresh && data.user) {
         // อาจจะไม่ต้องการ auto-login หลัง register แต่ถ้าต้องการก็ทำได้:
-        // storeTokens(data.access, data.refresh);
-        // setUser(data.user);
-        // setAccessToken(data.access);
+        storeTokens(data.access, data.refresh);
+        setUser(data.user);
+        setAccessToken(data.access);
         return data.user; // คืน user data เพื่อให้ frontend รู้ว่า register สำเร็จ
       }
       // ถ้า backend ไม่คืน token หรือ user ก็คืน null หรือ response data อื่นๆ

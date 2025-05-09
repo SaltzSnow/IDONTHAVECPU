@@ -104,7 +104,7 @@ export default function RegisterPage() {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push('/login');
+          router.push('/');
         }
       });
 
