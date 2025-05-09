@@ -1,57 +1,111 @@
-# General
+# General & OS specific
 .DS_Store
 *.log
 *.pot
-*.pyc
-__pycache__/
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media/
-static_collected/ # ถ้าคุณใช้ collectstatic ของ Django และไม่ต้องการเก็บใน repo
+Thumbs.db
+Desktop.ini
 
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.so
+*.coverage
+*.coverage.*
+instance/
 # Virtual Environments
 venv/
 .venv/
 env/
-.env/
+.env/ # Standard venv name
 ENV/
+pip-wheel-metadata/
+# Django specific
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3-journal # For journal files
+*.sqlite3-shm
+*.sqlite3-wal
+local_settings.py # Common for local Django settings override
+media/ # User-uploaded files
+static_collected/ # If you collect static files locally and don't want them in repo
+*.mo # Compiled translation files
 
-# Sensitive Files
-.env 
-pcrecommender/.env  # ไฟล์ .env ของ Django (ถ้ามี)
-pcrecommender-frontend/.env.local # ไฟล์ .env.local ของ Next.js
-pcrecommender-frontend/.env # ไฟล์ .env อื่นๆ ของ Next.js
-*.pem
-*.key
-
-# IDE / Editor specific
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Node.js / Next.js
+# Node.js / Next.js / Frontend (assuming frontend is in 'pcrecommender-frontend/')
 pcrecommender-frontend/node_modules/
 pcrecommender-frontend/.next/
-pcrecommender-frontend/out/ # ถ้ามีการ export static site
-pcrecommender-frontend/build/ # ถ้ามี build output อื่นๆ
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnp/
-.pnp.js
+pcrecommender-frontend/out/
+pcrecommender-frontend/build/ # General build output for some JS projects
+pcrecommender-frontend/.pnp # Yarn PnP
+pcrecommender-frontend/.pnp.* # Yarn PnP
+pcrecommender-frontend/.yarn/*
+!pcrecommender-frontend/.yarn/patches
+!pcrecommender-frontend/.yarn/plugins
+!pcrecommender-frontend/.yarn/releases
+!pcrecommender-frontend/.yarn/versions
+pcrecommender-frontend/coverage/ # Testing coverage for frontend
+pcrecommender-frontend/npm-debug.log*
+pcrecommender-frontend/yarn-debug.log*
+pcrecommender-frontend/yarn-error.log*
+pcrecommender-frontend/.pnpm-debug.log*
+pcrecommender-frontend/.vercel/ # Vercel deployment artifacts
+pcrecommender-frontend/*.tsbuildinfo # TypeScript build info
+# pcrecommender-frontend/next-env.d.ts # Usually auto-generated, but often committed. Your choice.
 
-# Docker
-docker-compose.override.yml # ถ้ามีไฟล์ override ที่ไม่ต้องการแชร์
-# อาจจะไม่ ignore Dockerfile หรือ docker-compose.yml เพราะเป็นส่วนหนึ่งของโปรเจกต์
+# IDE / Editor specific
+.idea/ # JetBrains IDEs (PyCharm, WebStorm, etc.)
+.vscode/ # VS Code
+nbproject/ # NetBeans
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+*.project
+*.tmproj
+project.xcworkspace/
+project.xcodeproj/
+*.kdev4
 
-# Python specific build artifacts
-*.egg-info/
-dist/
-build/
-*.tar.gz
-*.whl
+# Sensitive Files & Environment Variables
+# These should contain secrets and keys, NEVER commit them to a public repo
+# For private repos, an .env.example is often committed instead.
 
-# PostgreSQL data (ถ้าเผลอสร้าง volume path ผิดที่)
-# postgres_data/ # โดยปกติ volume จะถูกจัดการโดย Docker และไม่ควรอยู่ใน project dir
+# Root .env (for docker-compose GEMINI_API_KEY, etc.)
+.env
+
+# Django .env (if you have one inside pcrecommender/)
+pcrecommender/.env
+
+# Next.js .env files
+pcrecommender-frontend/.env
+pcrecommender-frontend/.env*.local # Ignores .env.local, .env.development.local, .env.production.local
+# You might want to commit .env.example or non-secret .env files if your team uses them
+# !pcrecommender-frontend/.env.development
+# !pcrecommender-frontend/.env.production
+
+# Security / Credentials
+*.pem
+*.key
+*.cer
+*.crt
+*.p12
+*.pfx
+credentials* # Be careful with wildcards, ensure it doesn't ignore wanted files
+secrets.yml
+secrets.json
+
+# Docker related (optional, depending on your workflow)
+# docker-compose.override.yml # Often used for local overrides
+# .dockerignore # Usually committed, but if you have local-only dockerignore files
+
+# Database Data (if a local volume path was accidentally created in project dir)
+# postgres_data/ # Docker named volumes are handled outside the repo by default
+
+# Other generated files
+*.bak
+*.tmp
+*~
+# Sass cache
+.sass-cache/
+# Sassc cache
+.sassc-cache/
