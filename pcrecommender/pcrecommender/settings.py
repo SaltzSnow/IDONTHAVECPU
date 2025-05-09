@@ -166,7 +166,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", # URL ของ Next.js dev server ของคุณ
     "http://127.0.0.1:3000",
     "http://frontend:3000",
-    "https://idonthavecpu-1.onrender.com/"
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
