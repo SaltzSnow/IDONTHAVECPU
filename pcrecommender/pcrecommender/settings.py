@@ -88,12 +88,27 @@ WSGI_APPLICATION = 'pcrecommender.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default= os.getenv('DATABASE_URL'),  # fallback สำหรับ local dev
-        conn_max_age=600,  # ปรับตามความเหมาะสม
-    )
-}
+DATABASE_URL_FROM_ENV = os.getenv('DATABASE_URL')
+
+if DATABASE_URL_FROM_ENV:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL_FROM_ENV,
+            conn_max_age=600, # Optional: connection pooling
+            ssl_require=os.getenv('POSTGRES_SSLMODE', 'allow') == 'require' # Optional: สำหรับ SSL
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_NAME', 'pcfavorites_db'),
+            'USER': os.getenv('POSTGRES_USER', 'postgres'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+            'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        }
+    }
 
 
 # Password validation
