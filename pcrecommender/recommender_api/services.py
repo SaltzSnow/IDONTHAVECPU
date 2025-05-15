@@ -122,7 +122,7 @@ def get_specs_from_gemini(budget, currency="THB", desired_parts=None, preferred_
 
     model_currency = "THB"
     prompt = generate_prompt(budget, model_currency, desired_parts, preferred_games)
-    model = genai.GenerativeModel(model_name="gemini-2.5-flash-preview-04-17")
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
 
     # print(f"--- DEBUG PROMPT ---\n{prompt}\n--------------------")
     raw_gemini_text_output = ""
@@ -322,7 +322,7 @@ def get_build_explanation_from_gemini(selected_build: dict, original_query: dict
         selected_build["calculated_total_price_thb"] = float(calculated_sum_for_selected_build)
 
     prompt = generate_build_explanation_prompt(selected_build, original_query)
-    model = genai.GenerativeModel(model_name="gemini-2.5-flash-preview-04-17")
+    model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
 
     raw_explanation_text = ""
     try:
