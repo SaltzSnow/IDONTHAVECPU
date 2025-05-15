@@ -41,6 +41,24 @@ class SavedSpecification(models.Model):
         display_name = self.name if self.name else f"Spec saved on {self.saved_at.strftime('%Y-%m-%d')}"
         return f"{display_name} (User: {self.user.username})"
 
-# ถ้ามี model ComponentBrand และ BaseComponent จากแผนเดิม ให้ลบออก หรือ comment ไว้
-# class ComponentBrand(models.Model): ...
-# class BaseComponent(models.Model): ...
+class RecommendationRequestLog(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL, # หรือ CASCADE ถ้าต้องการลบ log เมื่อ user ถูกลบ
+        null=True, # อนุญาตให้เป็น anonymous request ได้
+        blank=True,
+        related_name='recommendation_logs'
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    request_payload = models.JSONField(null=True, blank=True) # เก็บ payload ที่ user ส่งมา (งบ, เกม, etc.)
+    # (Optional) เก็บ IP address, user agent, etc.
+    # ip_address = models.GenericIPAddressField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        verbose_name = "Recommendation Request Log"
+        verbose_name_plural = "Recommendation Request Logs"
+
+    def __str__(self):
+        user_str = self.user.username if self.user else "Anonymous"
+        return f"Request by {user_str} at {self.timestamp.strftime('%Y-%m-%d %H:%M')}"

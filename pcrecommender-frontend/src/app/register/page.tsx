@@ -2,28 +2,25 @@
 "use client";
 
 import { useState, FormEvent, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext'; // ตรวจสอบ path ให้ถูกต้อง
+import { useAuth } from '@/contexts/AuthContext'; 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiUserPlus, FiLoader, FiUser, FiMail, FiLock, FiEye, FiEyeOff} from 'react-icons/fi';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2'; 
 import 'sweetalert2/dist/sweetalert2.min.css';
-
-// คุณสามารถ custom theme ของ SweetAlert2 ได้โดยการสร้างไฟล์ CSS/SCSS แยกต่างหาก
-// แล้ว import เข้ามา หรือใช้ customClass property ตอนเรียก Swal.fire
 
 interface FormData {
   username: string;
   email: string;
-  password_1: string; // เปลี่ยนเป็น password_1 ให้ตรงกับที่ dj-rest-auth อาจจะคาดหวัง หรือ password
-  password_2: string; // เปลี่ยนเป็น password_2
+  password_1: string; 
+  password_2: string; 
 }
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
-    password_1: '', // หรือ password
+    password_1: '', 
     password_2: '',
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +31,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (!authIsLoading && isAuthenticated) {
-      router.replace('/'); // Redirect ไปหน้า Home ถ้า login แล้ว
+      router.replace('/'); 
     }
   }, [isAuthenticated, authIsLoading, router]);
 
@@ -52,9 +49,9 @@ export default function RegisterPage() {
         title: 'เกิดข้อผิดพลาด!',
         text: 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน',
         confirmButtonText: 'ตกลง',
-        confirmButtonColor: '#3B82F6', // sky-500
-        background: '#1f2937', // slate-800
-        color: '#e5e7eb',     // slate-200
+        confirmButtonColor: '#3B82F6', 
+        background: '#1f2937', 
+        color: '#e5e7eb',    
         customClass: {
           popup: 'rounded-2xl shadow-xl border border-slate-700',
           title: 'text-sky-300',
@@ -64,37 +61,21 @@ export default function RegisterPage() {
       setIsLoading(false);
       return;
     }
-
-    // เตรียม payload ให้ตรงกับที่ dj-rest-auth/allauth คาดหวัง
-    // dj-rest-auth มักจะใช้ 'password' และ 'password2' หรือ 'password1' และ 'password2' สำหรับ registration
-    // จาก error ก่อนหน้า, backend คุณอาจจะคาดหวัง 'password1' และ 'password2'
-    const payload = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password_1, // ส่งเป็น 'password' ถ้า backend คาดหวัง (dj-rest-auth/allauth default)
-      password2: formData.password_2, // หรือ 'password1' และ 'password2' ตามที่ backend ต้องการ
-    };
-    // *** สำคัญ: ให้ตรวจสอบ API documentation หรือ error response จาก backend อีกครั้ง
-    // ว่า registration endpoint ของคุณคาดหวัง field password ชื่ออะไรกันแน่ (password/password2 หรือ password1/password2)
-    // ผมจะใช้ password และ password2 ตามที่ dj-rest-auth มักจะใช้เป็น default
-
+    
     try {
-      // const response = await register({ username: formData.username, email: formData.email, password: formData.password_1, password2: formData.password_2 });
-      // แก้ไขการส่งข้อมูลให้ register function ใน AuthContext ถ้ามันคาดหวัง structure ที่แตกต่าง
       await register({
           username: formData.username,
           email: formData.email,
-          password1: formData.password_1, // หรือ password1 ถ้า AuthContext.register ต้องการแบบนั้น
+          password1: formData.password_1,
           password2: formData.password_2
       });
-
 
       Swal.fire({
         icon: 'success',
         title: 'ลงทะเบียนสำเร็จ!',
         text: 'ยินดีต้อนรับ! คุณพร้อมลั่นแล้ว!',
         confirmButtonText: 'พร้อมลั่น!',
-        confirmButtonColor: '#10B981', // green-500
+        confirmButtonColor: '#10B981', 
         background: '#1f2937',
         color: '#e5e7eb',
         customClass: {
@@ -114,7 +95,6 @@ export default function RegisterPage() {
       const errorData = err.response?.data;
 
       if (errorData) {
-        // พยายามดึง Error Message ที่เฉพาะเจาะจงจาก Backend
         const fieldErrors: string[] = [];
         if (errorData.username && Array.isArray(errorData.username)) fieldErrors.push(`ชื่อผู้ใช้: ${errorData.username.join(', ')}`);
         if (errorData.email && Array.isArray(errorData.email)) fieldErrors.push(`อีเมล: ${errorData.email.join(', ')}`);
@@ -136,9 +116,9 @@ export default function RegisterPage() {
       Swal.fire({
         icon: 'error',
         title: 'เกิดข้อผิดพลาดในการลงทะเบียน',
-        html: `<pre class="text-left text-sm whitespace-pre-wrap">${errorMessage}</pre>`, // ใช้ html property เพื่อแสดงผลหลายบรรทัด
+        html: `<pre class="text-left text-sm whitespace-pre-wrap">${errorMessage}</pre>`, 
         confirmButtonText: 'ตกลง',
-        confirmButtonColor: '#EF4444', // red-500
+        confirmButtonColor: '#EF4444', 
         background: '#1f2937',
         color: '#e5e7eb',
         customClass: {
@@ -161,8 +141,8 @@ export default function RegisterPage() {
   }
 
   const inputContainerClass = "relative";
-  const inputClass = "w-full pl-12 pr-4 py-4 bg-slate-800/70 border border-slate-700/80 text-slate-100 rounded-xl shadow-inner focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder-slate-500 transition-colors duration-150 ease-in-out text-base md:text-lg"; // เพิ่ม padding
-  const labelClass = "block text-base font-semibold text-purple-300 mb-2.5"; // เพิ่ม margin-bottom
+  const inputClass = "w-full pl-12 pr-4 py-4 bg-slate-800/70 border border-slate-700/80 text-slate-100 rounded-xl shadow-inner focus:ring-2 focus:ring-purple-500 focus:border-purple-500 placeholder-slate-500 transition-colors duration-150 ease-in-out text-base md:text-lg"; 
+  const labelClass = "block text-base font-semibold text-purple-300 mb-2.5"; 
   const iconInputClass = "absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none";
 
 

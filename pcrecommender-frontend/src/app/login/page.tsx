@@ -2,17 +2,16 @@
 "use client";
 
 import { useState, FormEvent, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext'; // ตรวจสอบ path ให้ถูกต้อง
+import { useAuth } from '@/contexts/AuthContext'; 
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FiLogIn, FiAlertCircle, FiLoader, FiUser, FiLock, FiEye, FiEyeOff, FiCpu } from 'react-icons/fi';
-// ไม่จำเป็นต้อง import Swal หรือ CSS ของ Swal ถ้าหน้านี้ไม่ใช้แล้ว
 
 export default function LoginPage() {
-  const [identifier, setIdentifier] = useState(''); // สำหรับ Username หรือ Email
+  const [identifier, setIdentifier] = useState(''); 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null); // State สำหรับเก็บและแสดงข้อความ Error
+  const [error, setError] = useState<string | null>(null); 
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated, isLoading: authIsLoading } = useAuth();
   const router = useRouter();
@@ -27,18 +26,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null); // เคลียร์ error เก่าทุกครั้งที่ submit
+    setError(null); 
     setIsLoading(true);
     try {
-      // ส่ง identifier และ password ไปให้ login function ใน AuthContext
-      // AuthContext.login ควรจะ throw error ที่มี response.data ถ้า API call ล้มเหลว
       await login({ identifier: identifier, password: password });
-      // การ redirect หลังจาก login สำเร็จ ควรจะถูกจัดการโดย useEffect ด้านบน
-      // หรือถ้า login function ใน AuthContext จัดการ redirect เอง ก็ไม่ต้องทำอะไรเพิ่มที่นี่
-
     } catch (err: any) {
       console.error("Login Page handleSubmit Error:", err);
-      let thaiErrorMessage = "ชื่อผู้ใช้/อีเมล หรือรหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง"; // ข้อความ default ภาษาไทย
+      let thaiErrorMessage = "ชื่อผู้ใช้/อีเมล หรือรหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง"; 
 
       const errorData = err.response?.data;
       if (errorData) {
@@ -49,18 +43,15 @@ export default function LoginPage() {
           } else if (specificError.includes("e-mail address is not verified")) {
             thaiErrorMessage = "บัญชีนี้ยังไม่ได้ยืนยันอีเมล กรุณาตรวจสอบอีเมลของคุณ";
           } else {
-            // ถ้า backend ส่งข้อความภาษาไทยมาใน non_field_errors ก็ใช้ได้เลย
             thaiErrorMessage = errorData.non_field_errors[0];
           }
         } else if (errorData.detail) {
-          // สำหรับ error messages ทั่วไปที่อาจจะมาจาก DRF หรือ dj-rest-auth
            if (typeof errorData.detail === 'string' && errorData.detail.toLowerCase().includes("no active account found with the given credentials")) {
              thaiErrorMessage = "ไม่พบบัญชีผู้ใช้นี้ หรือรหัสผ่านไม่ถูกต้อง";
            } else {
              thaiErrorMessage = errorData.detail;
            }
         } else if (typeof errorData === 'object' && !Array.isArray(errorData)) {
-          // พยายามดึง error message แรกจาก field errors (ถ้ามี)
           const fieldErrorKeys = Object.keys(errorData);
           if (fieldErrorKeys.length > 0) {
             const firstKey = fieldErrorKeys[0];
@@ -68,20 +59,18 @@ export default function LoginPage() {
               thaiErrorMessage = `${firstKey}: ${errorData[firstKey][0]}`;
             }
           }
-        } else if (typeof errorData === 'string') { // กรณีที่ errorData เป็น string ตรงๆ
+        } else if (typeof errorData === 'string') { 
             thaiErrorMessage = errorData;
         }
       } else if (err.message && err.message.toLowerCase().includes('network error')) {
         thaiErrorMessage = "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์ โปรดตรวจสอบอินเทอร์เน็ตของคุณ";
       }
-      // ถ้ายังไม่มีข้อความที่เฉพาะเจาะจง ก็ใช้ default message
       setError(thaiErrorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ถ้ากำลังโหลดข้อมูล auth เริ่มต้น หรือถ้า login แล้ว (รอ redirect) ให้แสดง loading
   if (authIsLoading || (!authIsLoading && isAuthenticated)) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-900">
@@ -90,10 +79,9 @@ export default function LoginPage() {
       );
   }
 
-  // Styling classes (เหมือนเดิมจากตัวอย่างก่อนหน้า)
   const inputContainerClass = "relative";
   const inputClass = "w-full pl-12 pr-4 py-4 bg-slate-800/70 border border-slate-700/80 text-slate-100 rounded-xl shadow-inner focus:ring-2 focus:ring-sky-500 focus:border-sky-500 placeholder-slate-500 transition-colors duration-150 ease-in-out text-base md:text-lg";
-  const labelClass = "block text-base font-semibold text-sky-300 mb-2.5"; // ปรับ margin bottom
+  const labelClass = "block text-base font-semibold text-sky-300 mb-2.5"; 
   const iconInputClass = "absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none";
 
 
@@ -145,7 +133,7 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
-                className={inputClass + " pr-12"} // เพิ่ม padding ขวาสำหรับปุ่ม show/hide
+                className={inputClass + " pr-12"} 
                 placeholder="••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, FormEvent, useEffect, useRef } from "react";
-import apiClient from "@/services/api"; // Axios client จาก src/services/api.ts
+import apiClient from "@/services/api"; 
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from 'next/navigation';
 import {
@@ -16,14 +16,14 @@ import {
   FiCpu
 } from "react-icons/fi";
 import { IoSparkles } from "react-icons/io5";
-import Swal from 'sweetalert2'; // Import SweetAlert2
-import 'sweetalert2/dist/sweetalert2.min.css'; // หรือ SCSS theme ของคุณ
+import Swal from 'sweetalert2'; 
+import 'sweetalert2/dist/sweetalert2.min.css'; 
 import type {
   RecommendationBuild,
   RecommendationApiResponse,
   SourcePrompt,
   ComponentDetail,
-} from "@/lib/types"; // Import types
+} from "@/lib/types"; 
 
 interface FormData {
   budget: string;
@@ -38,11 +38,10 @@ interface FormData {
   preferred_games: string;
 }
 
-// Interface สำหรับ State ของ Explanation แต่ละ Build
 interface ExplanationState {
   text: string | null;
   isLoading: boolean;
-  error: string | null; // คาดหวัง string หรือ null
+  error: string | null; 
 }
 
 export default function HomePage() {
@@ -87,7 +86,7 @@ export default function HomePage() {
     setBuildExplanations({});
     setOpenExplanationKeys({});
 
-    const payload: any = { // ใช้ any ชั่วคราว หรือสร้าง Interface ใหม่ที่รองรับ flat structure
+    const payload: any = {
       budget: parseFloat(formData.budget) || 0,
       currency: formData.currency,
       preferred_games: formData.preferred_games
@@ -108,7 +107,6 @@ export default function HomePage() {
       const response = await apiClient.post<RecommendationApiResponse>("/recommend-specs/", payload);
       const responseData = response.data;
       if (responseData.error) {
-        // setError(responseData.error); // ไม่ set error ของ page โดยตรงแล้ว
         Swal.fire({
           icon: 'error',
           title: 'AI เกิดข้อผิดพลาด',
@@ -116,20 +114,19 @@ export default function HomePage() {
           showDenyButton: true,
           confirmButtonText: 'ตกลง',
           denyButtonText: 'ลองอีกครั้ง',
-          confirmButtonColor: '#64748b', // Slate-500
-          denyButtonColor: '#0ea5e9',   // Sky-500
+          confirmButtonColor: '#64748b',
+          denyButtonColor: '#0ea5e9',  
           background: '#1f2937', color: '#e5e7eb',
           customClass: { popup: 'rounded-2xl shadow-xl border border-slate-700', title: 'text-red-300', htmlContainer: 'text-slate-300'}
         }).then((result) => {
-          if (result.isDenied) { // ถ้ากด "ลองอีกครั้ง"
-            handleSubmit(); // เรียก handleSubmit ใหม่ด้วยข้อมูลเดิม
+          if (result.isDenied) { 
+            handleSubmit(); 
           }
         });
       } else if (responseData.recommendations) {
         setRecommendations(responseData.recommendations);
         setSourcePromptForSaving(responseData.source_prompt_for_saving || null);
         if (responseData.recommendations.length === 0) {
-          // setError("AI ไม่พบสเปคที่เหมาะสม ลองปรับเงื่อนไขดูใหม่นะคะ"); // เปลี่ยนไปใช้ Swal
           Swal.fire({
             icon: 'info',
             title: 'ไม่พบสเปคที่ตรงเงื่อนไข',
@@ -144,7 +141,6 @@ export default function HomePage() {
           }, 100);
         }
       } else {
-        // setError("ไม่สามารถรับข้อมูลสเปคจากเซิร์ฟเวอร์ได้ โปรดลองอีกครั้ง"); // เปลี่ยนไปใช้ Swal
         Swal.fire({
           icon: 'error', title: 'การตอบกลับไม่ถูกต้อง', text: 'ไม่สามารถรับข้อมูลสเปคจากเซิร์ฟเวอร์ได้อย่างถูกต้อง โปรดลองอีกครั้ง',
           showDenyButton: true, confirmButtonText: 'ตกลง', denyButtonText: 'ลองอีกครั้ง',
@@ -153,7 +149,6 @@ export default function HomePage() {
         }).then((result) => { if (result.isDenied) { handleSubmit(); }});
       }
     } catch (err: any) {
-      // setError(err.response?.data?.error || ...); // เปลี่ยนไปใช้ Swal
       const apiError = err.response?.data?.error || err.response?.data?.detail || err.message || "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์";
       console.error("API Call Error in handleSubmit:", err.response?.data || err);
       Swal.fire({
@@ -181,7 +176,7 @@ export default function HomePage() {
       Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกได้ ข้อมูลคำขอเดิมสำหรับสร้างสเปคนี้หายไป', confirmButtonColor: '#EF4444', background: '#1f2937', color: '#e5e7eb', customClass: { popup: 'rounded-2xl shadow-xl border border-slate-700', title: 'text-red-300', htmlContainer: 'text-slate-300'} });
       return;
     }
-    setError(null); // Clear general page error
+    setError(null); 
 
     try {
       await apiClient.post("/saved-specs/", {
@@ -232,7 +227,7 @@ export default function HomePage() {
             [buildKey]: { 
               text: null, 
               isLoading: false, 
-              error: explanationData.error || null // <--- แก้ไขตรงนี้: ถ้า error เป็น undefined ให้ใช้ null แทน
+              error: explanationData.error || null 
             }
           }));
         } else if (explanationData.explanation) {
@@ -273,7 +268,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="space-y-12 md:space-y-16 pb-28"> {/* ลด space-y เล็กน้อย */}
+    <div className="space-y-12 md:space-y-16 pb-28"> 
       {/* --- Hero Section --- */}
       <section className="text-center pt-16 pb-8 md:pt-20 md:pb-10 relative"> {/* ลด padding */}
         <div className="relative z-10 px-4 sm:px-6 lg:px-8">
@@ -318,7 +313,7 @@ export default function HomePage() {
           </div>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
              <div><label htmlFor="psu_wattage" className={labelClass}>กำลังไฟ PSU <span className="text-sm text-slate-500">(ถ้ามี)</span></label><input type="text" name="psu_wattage" id="psu_wattage" value={formData.psu_wattage} onChange={handleChange} className={inputClass} placeholder="เช่น 750W 80+ Gold"/></div>
-             <div><label htmlFor="preferred_games" className={labelClass}>เกมโปรด / โปรแกรมที่ใช้ <span className="text-sm text-slate-500">(คั่นด้วยจุลภาค)</span></label><input type="text" name="preferred_games" id="preferred_games" value={formData.preferred_games} onChange={handleChange} className={inputClass} placeholder="เช่น Cyberpunk 2077, Adobe Premiere Pro" /></div>
+             <div><label htmlFor="preferred_games" className={labelClass}>เกมโปรด / โปรแกรมที่ใช้ <span className="text-sm text-slate-500">(คั่นด้วย ,)</span></label><input type="text" name="preferred_games" id="preferred_games" value={formData.preferred_games} onChange={handleChange} className={inputClass} placeholder="เช่น Cyberpunk 2077, Adobe Premiere Pro" /></div>
           </div>
           
           <div className="pt-6">

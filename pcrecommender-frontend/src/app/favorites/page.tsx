@@ -9,12 +9,11 @@ import Link from 'next/link';
 import {
   FiHeart, FiTrash2, FiInfo, FiLoader, FiAlertCircle,
   FiEdit3, FiPlusCircle, FiChevronDown, FiChevronUp, FiSave, FiXCircle, FiCheckCircle
-} from 'react-icons/fi'; // เพิ่ม FiSave, FiXCircle, FiCheckCircle
+} from 'react-icons/fi'; 
 import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css'; // หรือ SCSS theme ของคุณ
+import 'sweetalert2/dist/sweetalert2.min.css'; 
 import type { SavedSpec, ComponentDetail } from '@/lib/types';
 
-// Helper functions (สามารถย้ายไป src/lib/utils.ts ถ้าใช้หลายที่)
 const getComponentName = (component: ComponentDetail | string | undefined): string => {
   if (!component) return 'N/A';
   if (typeof component === 'string') return component;
@@ -33,7 +32,7 @@ export default function FavoritesPage() {
   const router = useRouter();
   const [favorites, setFavorites] = useState<SavedSpec[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [pageError, setPageError] = useState<string | null>(null); // Error message หลักของหน้า
+  const [pageError, setPageError] = useState<string | null>(null); 
 
   // State for editing notes
   const [editingNotesSpecId, setEditingNotesSpecId] = useState<number | null>(null);
@@ -72,7 +71,6 @@ export default function FavoritesPage() {
     }
   }, [isAuthenticated]);
 
-  // Focus input when editing spec name
   useEffect(() => {
     if (editingSpecNameId !== null && nameInputRef.current) {
       nameInputRef.current.focus();
@@ -89,10 +87,10 @@ export default function FavoritesPage() {
       showCancelButton: true,
       confirmButtonText: 'ใช่, ลบเลย!',
       cancelButtonText: 'ยกเลิก',
-      confirmButtonColor: '#EF4444', // red-500
-      cancelButtonColor: '#6B7280',  // slate-500
-      background: '#1f2937', // slate-800
-      color: '#e5e7eb',     // slate-200
+      confirmButtonColor: '#EF4444', 
+      cancelButtonColor: '#6B7280',  
+      background: '#1f2937', 
+      color: '#e5e7eb', 
       customClass: { popup: 'rounded-2xl shadow-xl border border-slate-700', title: 'text-red-300 text-xl md:text-2xl', htmlContainer: 'text-slate-300 text-base', confirmButton: 'px-5 py-2.5 text-base', cancelButton: 'px-5 py-2.5 text-base'}
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -112,7 +110,7 @@ export default function FavoritesPage() {
   const handleStartEditNotes = (spec: SavedSpec) => {
     setEditingNotesSpecId(spec.id);
     setCurrentNotes(spec.user_notes || '');
-    setEditingSpecNameId(null); // ปิดโหมดแก้ชื่อ
+    setEditingSpecNameId(null); 
   };
 
   const handleSaveNotes = async (specId: number) => {
@@ -133,7 +131,7 @@ export default function FavoritesPage() {
   const handleStartEditSpecName = (spec: SavedSpec) => {
     setEditingSpecNameId(spec.id);
     setCurrentSpecName(spec.name || `สเปค ${new Date(spec.saved_at).toLocaleDateString('th-TH', { day:'2-digit', month:'short' })}`);
-    setEditingNotesSpecId(null); // ปิดโหมดแก้โน้ต
+    setEditingNotesSpecId(null); 
   };
 
   const handleSaveSpecName = async (specId: number) => {
@@ -148,7 +146,6 @@ export default function FavoritesPage() {
       });
       setFavorites(prev => prev.map(fav => fav.id === specId ? { ...fav, name: updatedSpec.name } : fav));
       setEditingSpecNameId(null);
-      //Swal.fire({ icon: 'success', title: 'บันทึกชื่อสำเร็จ!', showConfirmButton: false, timer: 1500, background: '#1f2937', color: '#e5e7eb', customClass: { popup: 'rounded-2xl shadow-xl border border-slate-700', title: 'text-green-300'} });
     } catch (err: any) {
       const saveNameError = err.response?.data?.detail || err.response?.data?.name?.[0] || 'ไม่สามารถอัปเดตชื่อสเปคได้';
       Swal.fire({ title: 'เกิดข้อผิดพลาด', text: saveNameError, icon: 'error', confirmButtonColor: '#EF4444', background: '#1f2937', color: '#e5e7eb', customClass: { popup: 'rounded-2xl shadow-xl border border-slate-700', title: 'text-red-300', htmlContainer: 'text-slate-300'} });

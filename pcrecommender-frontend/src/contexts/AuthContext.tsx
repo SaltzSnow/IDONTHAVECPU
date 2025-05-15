@@ -2,12 +2,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import apiClient from '@/services/api'; // Axios client จาก src/services/api.ts
-import { storeTokens, getAccessToken, clearTokens, getRefreshToken } from '@/services/tokenService'; // จาก src/services/tokenService.ts
+import apiClient from '@/services/api'; 
+import { storeTokens, getAccessToken, clearTokens, getRefreshToken } from '@/services/tokenService'; 
 import { useRouter } from 'next/navigation';
-import Swal from 'sweetalert2'; // Import SweetAlert2
-import 'sweetalert2/dist/sweetalert2.min.css'; // Import default SweetAlert2 theme
-import type { User, AuthTokens } from '@/lib/types'; // สมมติว่า import User และ AuthTokens มาจาก src/lib/types.ts
+import Swal from 'sweetalert2'; 
+import 'sweetalert2/dist/sweetalert2.min.css'; 
+import type { User, AuthTokens } from '@/lib/types'; 
 import { FiLoader } from 'react-icons/fi'
 
 interface AuthContextType {
@@ -15,46 +15,43 @@ interface AuthContextType {
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: any) => Promise<User | null>; // ควร type credentials ให้ดีกว่านี้
-  register: (userData: any) => Promise<User | null>; // ควร type userData ให้ดีกว่านี้
-  logout: () => void; // เปลี่ยนเป็น void เพราะ Swal จะจัดการ async และ redirect
+  login: (credentials: any) => Promise<User | null>; 
+  register: (userData: any) => Promise<User | null>; 
+  logout: () => void; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null); // เพิ่ม state สำหรับ accessToken
-  const [isLoading, setIsLoading] = useState(true); // Loading state สำหรับการตรวจสอบ auth เริ่มต้น
+  const [accessToken, setAccessToken] = useState<string | null>(null); 
+  const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
 
-  // ฟังก์ชันสำหรับดึงข้อมูล user เมื่อมี token
   const fetchUserWithToken = useCallback(async (token: string) => {
     if (token) {
       try {
         const { data: userData } = await apiClient.get<User>('/auth/user/', {
-          headers: { Authorization: `Bearer ${token}` }, // ส่ง token ไปกับ request
+          headers: { Authorization: `Bearer ${token}` }, 
         });
         setUser(userData);
-        setAccessToken(token); // เก็บ access token ไว้ใน state
+        setAccessToken(token); 
         return userData;
       } catch (error: any) {
         console.error('AuthContext: Failed to fetch user with token', error.response?.data || error.message);
-        if (error.response?.status === 401) { // ถ้า Token หมดอายุ หรือไม่ถูกต้อง
-          clearTokens(); // Clear tokens จาก localStorage
+        if (error.response?.status === 401) { 
+          clearTokens(); 
           setUser(null);
           setAccessToken(null);
-          // ไม่จำเป็นต้อง redirect ที่นี่ ปล่อยให้ component ที่เรียกจัดการ หรือ protected route จัดการ
         }
         return null;
       }
     }
-    setUser(null); // ถ้าไม่มี token ก็ set user เป็น null
+    setUser(null); 
     setAccessToken(null);
     return null;
-  }, []); // ไม่ต้องใส่ router ใน dependency array ถ้าไม่ใช้
+  }, []);
 
-  // ตรวจสอบสถานะ Authentication เมื่อ Component โหลดครั้งแรก
   useEffect(() => {
     const initializeAuth = async () => {
       setIsLoading(true);
@@ -90,22 +87,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       clearTokens();
       setUser(null);
       setAccessToken(null);
-      throw error; // โยน error ต่อไปให้ Form จัดการแสดงผล
+      throw error; 
     }
   };
 
-  const register = async (userData: any) => { // userData ควรมี type ที่ชัดเจน
+  const register = async (userData: any) => { 
     try {
-      // สมมติว่า backend คืน access, refresh, user object เมื่อ register สำเร็จ
       const { data } = await apiClient.post<AuthTokens>('/auth/registration/', userData);
       if (data.access && data.refresh && data.user) {
-        // อาจจะไม่ต้องการ auto-login หลัง register แต่ถ้าต้องการก็ทำได้:
         storeTokens(data.access, data.refresh);
         setUser(data.user);
         setAccessToken(data.access);
-        return data.user; // คืน user data เพื่อให้ frontend รู้ว่า register สำเร็จ
+        return data.user; 
       }
-      // ถ้า backend ไม่คืน token หรือ user ก็คืน null หรือ response data อื่นๆ
       return null;
     } catch (error) {
       console.error('Registration failed:', error);
@@ -128,10 +122,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         showCancelButton: true,
         confirmButtonText: 'ไปลั่นต่อ!',
         cancelButtonText: 'ไปหน้าเข้าสู่ระบบ',
-        confirmButtonColor: '#0ea5e9', // Tailwind sky-500
-        cancelButtonColor: '#64748b',  // Tailwind slate-500
-        background: '#1e293b', // Tailwind slate-800
-        color: '#e2e8f0',     // Tailwind slate-200
+        confirmButtonColor: '#0ea5e9', 
+        cancelButtonColor: '#64748b',  
+        background: '#1e293b', 
+        color: '#e2e8f0',     
         customClass: {
           popup: 'rounded-2xl shadow-xl border border-slate-700',
           title: 'text-sky-300 text-2xl md:text-3xl',
@@ -142,18 +136,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         reverseButtons: true
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push('/'); // ไปหน้าแรก
+          router.push('/'); 
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          router.push('/login'); // ไปหน้า Login
+          router.push('/login'); 
         }
-        // ถ้าผู้ใช้กด ESC หรือคลิกนอก modal, จะไม่ทำอะไร (หรือจะให้ default ไปหน้าแรกก็ได้)
-        // else {
-        //   router.push('/');
-        // }
       });
     };
 
-    if (refreshToken && accessToken) { // ตรวจสอบว่ามี token จริงๆ ก่อนเรียก API logout
+    if (refreshToken && accessToken) { 
       apiClient.post('/auth/logout/', { refresh: refreshToken })
         .then(() => {
           console.log("Refresh token successfully blacklisted on server.");

@@ -7,7 +7,7 @@ import axios, {
   import { getAccessToken, getRefreshToken, storeTokens, clearTokens } from './tokenService';
   
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const REFRESH_TOKEN_URL = '/auth/token/refresh/'; // Endpoint สำหรับ refresh token
+  const REFRESH_TOKEN_URL = '/auth/token/refresh/'; 
   
   const apiClient = axios.create({
     baseURL: API_BASE_URL,

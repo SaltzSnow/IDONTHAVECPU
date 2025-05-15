@@ -169,9 +169,8 @@ SIMPLE_JWT = {
 # pcrecommender/settings.py
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_HTTPONLY': False, # อนุญาตให้ JavaScript อ่าน Token ได้ (ถ้าจำเป็นสำหรับ Frontend)
-                                # ถ้าตั้งเป็น True (default) Token จะถูกส่งใน httpOnly cookie
-                                # ซึ่งปลอดภัยกว่าแต่ Frontend จะต้องจัดการต่างออกไป
+    'JWT_AUTH_HTTPONLY': False, 
+    'USER_DETAILS_SERIALIZER': 'recommender_api.serializers.UserSerializer',
 }
 
 CORS_ALLOWED_ORIGINS = [

@@ -1,18 +1,17 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Kanit } from 'next/font/google';
-import './globals.css'; // Import globals.css ที่แก้ไขแล้ว
+import './globals.css'; 
 import { AuthProvider } from '@/contexts/AuthContext';
-import Navbar from '@/components/Navbar'; // หรือ path ที่ถูกต้องของคุณ
+import Navbar from '@/components/Navbar'; 
 
 const kanit = Kanit({
   subsets: ['latin', 'thai'],
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
-  // variable: '--font-kanit' // ถ้าคุณจะใช้ font ผ่าน CSS variable ใน tailwind.config.ts
 });
 
-export const metadata: Metadata = { /* ... */ };
+export const metadata: Metadata = {};
 
 export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
