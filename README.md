@@ -14,7 +14,7 @@
 1.  **Prerequisites:**
     * Docker Desktop (หรือ Docker Engine + Docker Compose)
     * Git
-    * สร้างไฟล์ `.env` ที่ root ของโปรเจกต์ (ดู `.env.example` ถ้ามี) และใส่ `GEMINI_API_KEY` ของคุณ
+    * สร้างไฟล์ `.env` ที่ root ของโปรเจกต์ และใส่ `GEMINI_API_KEY={GEMINI_API_KEY ของคุณ}`
 
 2.  **Clone Repository (ถ้ายังไม่ได้ทำ):**
     ```bash
