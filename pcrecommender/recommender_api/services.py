@@ -3,7 +3,7 @@ import google.generativeai as genai
 import os
 import json
 from dotenv import load_dotenv
-import decimal # Import decimal for precise calculations
+import decimal 
 
 load_dotenv()
 
@@ -12,7 +12,6 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 else:
-    # ใน production ควรมีการจัดการ error ที่ดีกว่านี้ เช่น logging หรือ raising exception
     print("Warning: GEMINI_API_KEY is not set in .env file. AI recommendations will not work.")
 
 
@@ -29,7 +28,6 @@ def generate_prompt(budget, currency="THB", desired_parts=None, preferred_games=
         "กรุณาพิจารณาราคาตลาดปัจจุบันของส่วนประกอบต่างๆ ที่มีจำหน่ายในประเทศไทยอย่างละเอียด"
     ]
 
-    # กำหนดรายละเอียด JSON output ที่ต้องการ
     json_output_format_details = [
         "สำหรับแต่ละแบบ กรุณาให้ข้อมูลต่อไปนี้ในรูปแบบ JSON object ที่ถูกต้อง:",
         "- build_name: ชื่อชุดสเปค (string, เช่น 'ชุดเริ่มต้นคุ้มค่าสำหรับเกมเมอร์ไทย')",
@@ -47,7 +45,6 @@ def generate_prompt(budget, currency="THB", desired_parts=None, preferred_games=
         "ตรวจสอบให้แน่ใจว่าส่วนประกอบทั้งหมดเข้ากันได้"
     ]
 
-    # คำนวณ total_price_estimate_thb สำหรับตัวอย่าง JSON ให้ถูกต้อง
     example_cpu_price = 5000
     example_gpu_price = 10000
     example_ram_price = 1800
@@ -86,7 +83,7 @@ def generate_prompt(budget, currency="THB", desired_parts=None, preferred_games=
         prompt_lines.append("ส่งผลลัพธ์เป็น JSON array ของ object โดยแต่ละ object คือหนึ่งสเปค ตามรูปแบบที่ระบุข้างต้น")
         prompt_lines.append("ตัวอย่าง object หนึ่งสเปคใน array (ราคาเป็นตัวอย่าง โปรดใช้ราคาตลาดจริงในไทย ณ เวลาปัจจุบัน และราคารวมต้องตรงกับผลบวกของส่วนประกอบ):")
         prompt_lines.append(example_json_object)
-    else: # Scenario 2 & 3
+    else: 
         if desired_parts and any(desired_parts.values()):
             prompt_lines.append("ผู้ใช้ได้ระบุส่วนประกอบบางส่วนที่ต้องการดังนี้ (หากส่วนประกอบเหล่านี้มีราคาสูงหรือหายากในไทย ณ เวลาปัจจุบัน โปรดแนะนำทางเลือกที่ใกล้เคียงและคุ้มค่ากว่า และปรับราคารวมให้สอดคล้อง):")
             if desired_parts.get("cpu"): prompt_lines.append(f"- CPU ที่ต้องการ: {desired_parts['cpu']}")
@@ -124,7 +121,6 @@ def get_specs_from_gemini(budget, currency="THB", desired_parts=None, preferred_
     prompt = generate_prompt(budget, model_currency, desired_parts, preferred_games)
     model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
 
-    # print(f"--- DEBUG PROMPT ---\n{prompt}\n--------------------")
     raw_gemini_text_output = ""
     try:
         from google.generativeai.types import GenerationConfig
@@ -133,7 +129,6 @@ def get_specs_from_gemini(budget, currency="THB", desired_parts=None, preferred_
         )
         response = model.generate_content(prompt, generation_config=generation_config)
         raw_gemini_text_output = response.text
-        # print(f"--- DEBUG RAW GEMINI RESPONSE ---\n{raw_gemini_text_output}\n-----------------------------")
         parsed_json = json.loads(raw_gemini_text_output)
 
         final_response = {
@@ -184,12 +179,11 @@ def get_specs_from_gemini(budget, currency="THB", desired_parts=None, preferred_
                 if gemini_total_str is not None:
                     try:
                         gemini_total_decimal = decimal.Decimal(str(gemini_total_str))
-                        if abs(gemini_total_decimal - calculated_sum) > decimal.Decimal('1.00'): # Tolerance of 1 THB
+                        if abs(gemini_total_decimal - calculated_sum) > decimal.Decimal('1.00'): 
                             print(f"PRICE MISMATCH for build '{build.get('build_name', 'Unknown Build')}': Gemini total: {gemini_total_decimal}, Calculated: {calculated_sum}. OVERRIDING WITH CALCULATED VALUE.")
                             build["total_price_estimate_thb"] = float(calculated_sum)
                             build["price_calculation_note"] = "Total price was recalculated from components for accuracy."
                         else:
-                            # If close enough, keep Gemini's original total, but convert to float
                             build["total_price_estimate_thb"] = float(gemini_total_decimal)
                     except (ValueError, TypeError, decimal.InvalidOperation):
                         print(f"Warning: Gemini total_price_estimate_thb '{gemini_total_str}' is not a valid number for build '{build.get('build_name', 'Unknown Build')}'. USING CALCULATED VALUE.")
@@ -265,12 +259,11 @@ def generate_build_explanation_prompt(selected_build: dict, original_query: dict
     if selected_build.get("build_name"):
         prompt_lines.append(f"- ชื่อชุด: {selected_build['build_name']}")
     
-    # Use calculated_total_price_thb for consistency in explanation, or fallback
     display_total_price = selected_build.get("calculated_total_price_thb", selected_build.get("total_price_estimate_thb"))
     if display_total_price is not None:
         try:
             price_val = float(display_total_price)
-            prompt_lines.append(f"- ราคารวมประมาณ (ตามส่วนประกอบ): {price_val:,.0f} THB") # Clarified this is sum of parts
+            prompt_lines.append(f"- ราคารวมประมาณ (ตามส่วนประกอบ): {price_val:,.0f} THB") 
         except (ValueError, TypeError):
             prompt_lines.append(f"- ราคารวมประมาณ: {display_total_price}")
 
@@ -308,7 +301,7 @@ def get_build_explanation_from_gemini(selected_build: dict, original_query: dict
     if not GEMINI_API_KEY:
         return {"error": "Gemini API key not configured."}
 
-    if "calculated_total_price_thb" not in selected_build: # Ensure this field exists for the prompt
+    if "calculated_total_price_thb" not in selected_build:
         calculated_sum_for_selected_build = decimal.Decimal(0)
         component_keys_for_sum = ['cpu', 'gpu', 'ram', 'storage', 'motherboard', 'psu', 'case', 'cooler']
         for key in component_keys_for_sum:

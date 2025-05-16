@@ -13,19 +13,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5c9!m9+!ubejge_cx8dyca^41^y%n425%_c(4@&w3j0!rc(c(4'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend', 'idonthavecpu.onrender.com'] 
 
@@ -102,8 +99,8 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('POSTGRES_NAME', 'pcfavorites_db'),
-            'USER': os.getenv('POSTGRES_USER', 'postgres'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+            'USER': os.getenv('POSTGRES_USER', 'saltzsnow'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'mypassword'),
             'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
             'PORT': os.getenv('POSTGRES_PORT', '5432'),
         }
@@ -162,8 +159,8 @@ REST_FRAMEWORK = {
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), # อายุ access token
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # อายุ refresh token
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    
 }
 
 # pcrecommender/settings.py
@@ -173,8 +170,18 @@ REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'recommender_api.serializers.UserSerializer',
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email' 
+ACCOUNT_EMAIL_REQUIRED = True                
+ACCOUNT_UNIQUE_EMAIL = True  
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", # URL ของ Next.js dev server ของคุณ
+    "http://localhost:3000", 
     "http://127.0.0.1:3000",
     "http://frontend:3000",
     "https://idonthavecpu-1.onrender.com"

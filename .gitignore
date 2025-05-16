@@ -18,45 +18,45 @@ instance/
 venv/
 .venv/
 env/
-.env/ # Standard venv name
+.env/
 ENV/
 pip-wheel-metadata/
 # Django specific
 db.sqlite3
 db.sqlite3-journal
-*.sqlite3-journal # For journal files
+*.sqlite3-journal 
 *.sqlite3-shm
 *.sqlite3-wal
-local_settings.py # Common for local Django settings override
-media/ # User-uploaded files
-static_collected/ # If you collect static files locally and don't want them in repo
-*.mo # Compiled translation files
+local_settings.py 
+media/ 
+static_collected/ 
+*.mo 
 
 # Node.js / Next.js / Frontend (assuming frontend is in 'pcrecommender-frontend/')
 pcrecommender-frontend/node_modules/
 pcrecommender-frontend/.next/
 pcrecommender-frontend/out/
-pcrecommender-frontend/build/ # General build output for some JS projects
-pcrecommender-frontend/.pnp # Yarn PnP
-pcrecommender-frontend/.pnp.* # Yarn PnP
+pcrecommender-frontend/build/ 
+pcrecommender-frontend/.pnp 
+pcrecommender-frontend/.pnp.* 
 pcrecommender-frontend/.yarn/*
 !pcrecommender-frontend/.yarn/patches
 !pcrecommender-frontend/.yarn/plugins
 !pcrecommender-frontend/.yarn/releases
 !pcrecommender-frontend/.yarn/versions
-pcrecommender-frontend/coverage/ # Testing coverage for frontend
+pcrecommender-frontend/coverage/
 pcrecommender-frontend/npm-debug.log*
 pcrecommender-frontend/yarn-debug.log*
 pcrecommender-frontend/yarn-error.log*
 pcrecommender-frontend/.pnpm-debug.log*
-pcrecommender-frontend/.vercel/ # Vercel deployment artifacts
-pcrecommender-frontend/*.tsbuildinfo # TypeScript build info
+pcrecommender-frontend/.vercel/ 
+pcrecommender-frontend/*.tsbuildinfo 
 # pcrecommender-frontend/next-env.d.ts # Usually auto-generated, but often committed. Your choice.
 
 # IDE / Editor specific
-.idea/ # JetBrains IDEs (PyCharm, WebStorm, etc.)
-.vscode/ # VS Code
-nbproject/ # NetBeans
+.idea/
+.vscode/ 
+nbproject/ 
 *.sublime-project
 *.sublime-workspace
 *.komodoproject
@@ -78,7 +78,7 @@ pcrecommender/.env
 
 # Next.js .env files
 pcrecommender-frontend/.env
-pcrecommender-frontend/.env*.local # Ignores .env.local, .env.development.local, .env.production.local
+pcrecommender-frontend/.env*.local 
 # You might want to commit .env.example or non-secret .env files if your team uses them
 # !pcrecommender-frontend/.env.development
 # !pcrecommender-frontend/.env.production
@@ -90,7 +90,7 @@ pcrecommender-frontend/.env*.local # Ignores .env.local, .env.development.local,
 *.crt
 *.p12
 *.pfx
-credentials* # Be careful with wildcards, ensure it doesn't ignore wanted files
+credentials* 
 secrets.yml
 secrets.json
 
